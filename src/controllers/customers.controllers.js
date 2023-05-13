@@ -10,7 +10,7 @@ export default class CustomerControllers {
       `,
         [name, phone, cpf, birthday]
       );
-      res.sendStatus(200);
+      res.sendStatus(201);
     } catch (err) {
       res.sendStatus(500);
     }
