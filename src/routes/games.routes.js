@@ -1,8 +1,8 @@
 import { Router } from "express";
 import GamesControllers from "../controllers/games.controllers.js";
-import GamesValidation from "../middlewares/games.validation.js";
-import { validateSchemaBody } from "../middlewares/schema.validate.js";
+import GamesValidation from "../middlewares/games.validations.js";
 import schemas from "../schemas/schemas.js";
+import { validateSchemaBody } from "../middlewares/schema.validate.js";
 
 const gamesControllers = new GamesControllers();
 const gamesValidation = new GamesValidation();

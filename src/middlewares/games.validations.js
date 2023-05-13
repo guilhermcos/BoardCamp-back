@@ -2,14 +2,15 @@ import { db } from "../database/database.connection.js";
 
 export default class GamesValidation {
   async validateInsertGame(req, res, next) {
+    const { name } = req.body.name;
     try {
-      const game = db.query(
+      const game = await db.query(
         `
       SELECT * FROM games WHERE games.name=$1
       `,
-        [req.body.name]
+        [name]
       );
-      if ((await game).rows.length > 0) return res.sendStatus(409);
+      if (game.rows.length > 0) return res.sendStatus(409);
       next();
     } catch (err) {
       res.sendStatus(500);
