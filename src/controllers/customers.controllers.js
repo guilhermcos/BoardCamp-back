@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { db } from "../database/database.connection.js";
 
 export default class CustomerControllers {
@@ -21,6 +22,9 @@ export default class CustomerControllers {
       const customers = await db.query(`
         SELECT * FROM "customers";
         `);
+      customers.rows.map((customer) => {
+        customer.birthday = dayjs(customer.birthday).format("YYYY-MM-DD");
+      });
       res.status(200).send(customers.rows);
     } catch (err) {
       console.log(err.message);
@@ -31,10 +35,11 @@ export default class CustomerControllers {
     const { id } = req.params;
     try {
       const customer = await db.query(
-        `
-      SELECT * FROM customers WHERE customers.id=$1
-      `,
+        `SELECT * FROM customers WHERE customers.id=$1`,
         [id]
+      );
+      customer.rows[0].birthday = dayjs(customer.rows[0].birthday).format(
+        "YYYY-MM-DD"
       );
       res.status(200).send(customer.rows);
     } catch (err) {
