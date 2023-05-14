@@ -41,7 +41,7 @@ export default class CustomerControllers {
       customer.rows[0].birthday = dayjs(customer.rows[0].birthday).format(
         "YYYY-MM-DD"
       );
-      res.status(200).send(customer.rows);
+      res.status(200).send(customer.rows[0]);
     } catch (err) {
       return res.sendStatus(500);
     }
