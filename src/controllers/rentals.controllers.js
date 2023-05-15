@@ -28,11 +28,18 @@ export default class RentalsControllers {
   }
 
   async getRentals(req, res) {
+    const { customerId = "", gameId = "" } = req.query;
     try {
-      const rentals =
-        await db.query(`SELECT rentals.*, games.name AS "gameName", customers.name AS "customerName" FROM rentals
+      const rentals = await db.query(
+        `SELECT rentals.*, games.name AS "gameName", customers.name AS "customerName" FROM rentals
         JOIN games ON rentals."gameId" = games."id"
-        JOIN customers ON rentals."customerId" = customers."id"`);
+        JOIN customers ON rentals."customerId" = customers."id" 
+        WHERE 1=1 
+        ${customerId ? `AND "customerId" = $1` : `AND $1 = $1`} 
+        ${gameId ? `AND "gameId" = $2` : `AND $2 = $2`}
+        ;`,
+        [customerId, gameId]
+      );
       const rentalsList = rentals.rows.map((rental) => {
         const {
           id,
@@ -69,7 +76,7 @@ export default class RentalsControllers {
       });
       res.status(200).send(rentalsList);
     } catch (err) {
-      res.sendStatus(500);
+      res.status(500).send(err.message);
     }
   }
 

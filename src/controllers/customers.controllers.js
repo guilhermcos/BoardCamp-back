@@ -18,10 +18,14 @@ export default class CustomerControllers {
   }
 
   async getCustomers(req, res) {
+    const { cpf = "" } = req.query;
     try {
-      const customers = await db.query(`
-        SELECT * FROM "customers";
-        `);
+      const customers = await db.query(
+        `
+        SELECT * FROM "customers" WHERE cpf ILIKE $1 || '%';
+        `,
+        [cpf]
+      );
       customers.rows.map((customer) => {
         customer.birthday = dayjs(customer.birthday).format("YYYY-MM-DD");
       });
@@ -34,13 +38,8 @@ export default class CustomerControllers {
   async getCustomersById(req, res) {
     const { id } = req.params;
     try {
-      const customer = await db.query(
-        `SELECT * FROM customers WHERE customers.id=$1`,
-        [id]
-      );
-      customer.rows[0].birthday = dayjs(customer.rows[0].birthday).format(
-        "YYYY-MM-DD"
-      );
+      const customer = await db.query(`SELECT * FROM customers WHERE customers.id=$1`, [id]);
+      customer.rows[0].birthday = dayjs(customer.rows[0].birthday).format("YYYY-MM-DD");
       res.status(200).send(customer.rows[0]);
     } catch (err) {
       return res.sendStatus(500);

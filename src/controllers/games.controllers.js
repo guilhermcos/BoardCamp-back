@@ -19,13 +19,15 @@ export default class GamesControllers {
   }
 
   async getGames(req, res) {
-    const { name = "" } = req.query;
+    const { name = "", limit = null, offset = 0 } = req.query;
     try {
       const games = await db.query(
         `
-        SELECT * FROM "games" WHERE name ILIKE $1 || '%';
+        SELECT * FROM "games" WHERE name ILIKE $1 || '%' 
+        ${limit ? `LIMIT $3` : ""} 
+        OFFSET $2;
         `,
-        [name]
+        limit ? [name, offset, limit] : [name, offset]
       );
       res.status(200).send(games.rows);
     } catch (err) {
