@@ -15,5 +15,6 @@ rentalsRouter.post(
   rentalsValidations.validateInsertRental,
   rentalsControllers.insertRental
 );
+rentalsRouter.get("/rentals", rentalsControllers.getRentals);
 
 export default rentalsRouter;

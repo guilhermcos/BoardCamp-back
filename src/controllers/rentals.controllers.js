@@ -26,4 +26,49 @@ export default class RentalsControllers {
       res.status(500).send(err.message);
     }
   }
+
+  async getRentals(req, res) {
+    try {
+      const rentals =
+        await db.query(`SELECT rentals.*, games.name AS "gameName", customers.name AS "customerName" FROM rentals
+        JOIN games ON rentals."gameId" = games."id"
+        JOIN customers ON rentals."customerId" = customers."id"`);
+      const rentalsList = rentals.rows.map((rental) => {
+        const {
+          id,
+          customerId,
+          gameId,
+          rentDate,
+          daysRented,
+          returnDate,
+          originalPrice,
+          delayFee,
+          gameName,
+          customerName,
+        } = rental;
+        const formatedrentDate = dayjs(rentDate).format("YYYY-MM-DD");
+        return {
+          id,
+          customerId,
+          gameId,
+          formatedrentDate,
+          daysRented,
+          returnDate,
+          originalPrice,
+          delayFee,
+          customer: {
+            id: customerId,
+            name: customerName,
+          },
+          game: {
+            id: gameId,
+            name: gameName,
+          },
+        };
+      });
+      res.status(200).send(rentalsList);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
 }
