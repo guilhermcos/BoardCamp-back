@@ -19,4 +19,29 @@ export default class RentalsValidations {
       res.sendStatus(500);
     }
   }
+
+  async validateDeleteRental(req, res, next) {
+    const { id } = req.params;
+    try {
+      const rental = await db.query(`SELECT * FROM rentals WHERE id = $1`, [id]);
+      if (!rental.rows.length) return res.status(404).send("rental not found");
+      if (rental.rows[0].returnDate === null) return res.status(400).send("rental not finished");
+      next();
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+
+  async validateFinishRental(req, res, next) {
+    const { id } = req.params;
+    try {
+      const rental = await db.query(`SELECT * FROM rentals WHERE id = $1`, [id]);
+      if (!rental.rows.length) return res.status(404).send("rental not found");
+      if (rental.rows[0].returnDate !== null) return res.status(400).send("already finished");
+      res.locals.rental = rental.rows[0];
+      next();
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
 }

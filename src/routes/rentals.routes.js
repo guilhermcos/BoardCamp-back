@@ -9,12 +9,18 @@ const rentalsValidations = new RentalsValidations();
 
 const rentalsRouter = Router();
 
+rentalsRouter.get("/rentals", rentalsControllers.getRentals);
 rentalsRouter.post(
   "/rentals",
   validateSchemaBody(schemas.insertRental),
   rentalsValidations.validateInsertRental,
   rentalsControllers.insertRental
 );
-rentalsRouter.get("/rentals", rentalsControllers.getRentals);
+rentalsRouter.post("/rentals/:id/return", rentalsControllers.finishRental);
+rentalsRouter.delete(
+  "/rentals/:id",
+  rentalsValidations.validateDeleteRental,
+  rentalsControllers.deleteRental
+);
 
 export default rentalsRouter;

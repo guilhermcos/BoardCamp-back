@@ -71,4 +71,42 @@ export default class RentalsControllers {
       res.sendStatus(500);
     }
   }
+
+  async deleteRental(req, res) {
+    const { id } = req.params;
+    try {
+      await db.query(`DELETE FROM rentals WHERE rentals."id" = $1`, [id]);
+      res.sendStatus(200);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+
+  async finishRental(req, res) {
+    const { id } = req.params;
+    try {
+      const rental = res.locals.rental;
+      const { daysRented, originalPrice } = rental;
+
+      const today = Date.now();
+      const rentDate = rental.rentDate;
+      const daysWithCustomer = dayjs(today).diff(rentDate, "day");
+      const returnDate = dayjs(today).format("YYYY-MM-DD");
+
+      let delayFee = 0;
+      if (daysWithCustomer > daysRented) {
+        delayFee = (daysWithCustomer - daysRented) * (originalPrice / daysRented);
+      }
+
+      await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3`, [
+        returnDate,
+        delayFee,
+        id,
+      ]);
+
+      res.sendStatus(200);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
 }
