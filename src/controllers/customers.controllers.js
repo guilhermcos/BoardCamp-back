@@ -18,13 +18,18 @@ export default class CustomerControllers {
   }
 
   async getCustomers(req, res) {
-    const { cpf = "" } = req.query;
+    let { cpf = "", offset = 0, limit = null } = req.query;
+    if (!offset) {
+      offset = 0;
+    }
     try {
       const customers = await db.query(
         `
-        SELECT * FROM "customers" WHERE cpf ILIKE $1 || '%';
-        `,
-        [cpf]
+        SELECT * FROM "customers" WHERE cpf ILIKE $1 || '%'
+        ${limit ? "LIMIT $3" : ""} 
+        OFFSET $2
+        ;`,
+        limit ? [cpf, offset, limit] : [cpf, offset]
       );
       customers.rows.map((customer) => {
         customer.birthday = dayjs(customer.birthday).format("YYYY-MM-DD");
