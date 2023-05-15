@@ -51,7 +51,7 @@ export default class RentalsControllers {
           id,
           customerId,
           gameId,
-          formatedrentDate,
+          rentDate: formatedrentDate,
           daysRented,
           returnDate,
           originalPrice,
