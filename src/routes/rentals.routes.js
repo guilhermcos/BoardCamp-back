@@ -16,7 +16,11 @@ rentalsRouter.post(
   rentalsValidations.validateInsertRental,
   rentalsControllers.insertRental
 );
-rentalsRouter.post("/rentals/:id/return", rentalsControllers.finishRental);
+rentalsRouter.post(
+  "/rentals/:id/return",
+  rentalsValidations.validateFinishRental,
+  rentalsControllers.finishRental
+);
 rentalsRouter.delete(
   "/rentals/:id",
   rentalsValidations.validateDeleteRental,

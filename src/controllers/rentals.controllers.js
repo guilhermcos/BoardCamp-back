@@ -47,13 +47,14 @@ export default class RentalsControllers {
           customerName,
         } = rental;
         const formatedrentDate = dayjs(rentDate).format("YYYY-MM-DD");
+        const formatedReturnDate = returnDate ? dayjs(rentDate).format("YYYY-MM-DD") : null;
         return {
           id,
           customerId,
           gameId,
           rentDate: formatedrentDate,
           daysRented,
-          returnDate,
+          returnDate: formatedReturnDate,
           originalPrice,
           delayFee,
           customer: {
