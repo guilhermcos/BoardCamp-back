@@ -25,6 +25,12 @@ const schemas = {
       })
       .required(),
   }).unknown(true),
+
+  insertRental: Joi.object({
+    customerId: Joi.number().required(),
+    gameId: Joi.number().required(),
+    daysRented: Joi.number().min(1).required(),
+  }).unknown(true),
 };
 
 export default schemas;

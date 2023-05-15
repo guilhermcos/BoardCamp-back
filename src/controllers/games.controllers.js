@@ -6,7 +6,9 @@ export default class GamesControllers {
     try {
       await db.query(
         `
-        INSERT INTO "games" ("name", "image", "stockTotal", "pricePerDay") VALUES ($1,$2,$3,$4);
+        INSERT INTO "games" 
+        ("name", "image", "stockTotal", "pricePerDay") 
+        VALUES ($1,$2,$3,$4);
         `,
         [name, image, stockTotal, pricePerDay]
       );
